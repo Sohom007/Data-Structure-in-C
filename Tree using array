@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<stdlib.h>
+ 
+typedef struct node {
+    int data;
+    struct node *left;
+    struct node *right;
+} node;
+ 
+node * build_node(int data) {
+    node* newnode=calloc(1,sizeof(node));
+    newnode->data=data;
+    newnode->right=NULL;
+    newnode->left=NULL;
+    return newnode;
+}
+ 
+node *build_subtree(int **a) {
+    if(**a == -1) {
+        return NULL;
+    }
+    node *n = build_node(**a);
+ 
+    (*a)++;
+    n->left = build_subtree(a);
+ 
+    (*a)++;
+    n->right = build_subtree(a);
+ 
+    return n;
+}
+ 
+node *build_tree(int *a) {
+    return build_subtree(&a);
+}
+ 
+ 
+int main() {
+    int a[]={4, 2, 9, -1, -1, 8,-1,-1, 7,-1,-1};
+    node *root=NULL;
+    root=build_tree(a);
+    printf("The Binary Tree Has:\n\n");
+    printf("root = %d \n",root->data);
+    printf("root->left = %d \n",root->left->data);
+    printf("root->right = %d \n",root->right->data);
+}
