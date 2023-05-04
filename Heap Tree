@@ -1,0 +1,78 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node{
+    int data;
+    struct node* left;
+    struct node* right;
+}node;
+int * insert_heap(int*,int,int);
+node *build_node(int);
+node* build_tree(int*,int,int,node*);
+void preorder(node *);
+int main()
+{
+    int counter=0,item;
+    int *a=(int*)calloc(100,sizeof(int)); 
+    while(1)
+    {
+        printf("Enter an element to insert(-1 to exit):");
+        scanf("%d",&item);
+        if(item==-1) break;
+        a=insert_heap(a,item,(counter-1));
+        counter++;
+    }
+    node * root=NULL;
+    root=build_tree(a,0,(counter-1),root);
+    if(counter>0)
+    {
+        printf("The Tree Looks Like:");
+        preorder(root);
+        printf("END\n");
+ 
+    }
+}
+int * insert_heap(int* a,int item,int max)
+{
+    int empty=max+1,par;
+    while(empty>0)
+    {
+        par=(empty-1)/2;
+        if(a[par]>=item)
+        {
+            a[empty]=item;
+            return a;
+        }
+        else{
+            a[empty]=a[par];
+            empty=par;
+        }
+    }
+    a[0]=item;
+    return a;
+}
+node * build_node(int item)
+{
+    node * new=(node*)malloc(sizeof(node));
+    new->data=item;
+    new->left=NULL;
+    new->right=NULL;
+    return new;
+}
+node * build_tree(int* a,int index,int max,node * root)
+{
+    if(index>max)
+    {
+        return NULL;
+    }
+    root=build_node(a[index]);
+    root->left=build_tree(a,(2*index)+1,max,root->left);
+    root->right=build_tree(a,(2*index)+2,max,root->right);
+    return root;
+}
+void preorder(node *root)
+{
+    if(root==NULL) return;
+    printf("%d->",root->data);
+    preorder(root->left);
+    preorder(root->right);
+}
