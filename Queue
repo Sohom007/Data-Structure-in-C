@@ -1,0 +1,94 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 100
+typedef struct member{
+    int data[MAX];
+    int front;
+    int back;    
+}member;
+member insertion(int,member);
+member deletion(member);
+int overflow(member);
+int underflow(member);
+void display(member);
+void choices();
+int main()
+{
+    choices();
+    return 0;
+}
+void choices()
+{
+    member a;
+    a.front=-1;a.back=-1;
+    int ch,val;
+    while(1)
+    {
+        printf("1.Insertion\n");
+        printf("2.Deletion\n");
+        printf("Enter Your Choice(-1 to exit):");
+        scanf("%d",&ch);if(ch==-1) return;
+        switch(ch)
+        {
+            case 1:
+                printf("Enter The Value To Insert:");
+                scanf("%d",&val);
+                a=insertion(val,a);
+                printf("The Queue Looks Like:");display(a);
+                break;
+            case 2:
+                a=deletion(a);
+                printf("The Queue Looks Like:");display(a);
+                break;
+        }
+    }
+}
+member insertion(int val,member a)
+{
+    if(a.front==-1) a.front+=1;
+    a.back+=1;
+    if(overflow(a)!=1)
+    {
+        a.data[a.back]=val;
+        printf("Inserted Successfully!\n");
+    }
+    else printf("Queue is Full!\n");
+    return a;
+}
+int overflow(member a)
+{
+    if(a.front>a.back || a.back>MAX) 
+    {
+        return 1;}
+    return 0;
+}
+int underflow(member a)
+{
+    if(a.front>a.back || a.front==-1 || a.back==-1) return 1;
+    return 0;
+}
+void display(member a)
+{
+    for(int i=a.front;i<=a.back;i++)
+    {
+        printf("%d->",a.data[i]);
+    }
+    printf("END\n");
+}
+member deletion(member a)
+{
+    if(underflow(a)==1)
+    {
+        printf("Queue is Empty!\n");return a;
+    }
+    else{
+        printf("%d has been dequeued!\n",a.data[a.front++]);
+        for(int i=a.front;i<=a.back;i++)
+        {
+            a.data[i-1]=a.data[i];
+        }
+        a.front-=1;
+        a.back-=1;
+        return a;
+    }
+}
