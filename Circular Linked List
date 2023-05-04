@@ -1,0 +1,207 @@
+#include<stdio.h>
+#include<stdlib.h>
+int length_of_list=1;
+typedef struct linked_list
+{
+    int data;
+    struct linked_list *link;
+}node;
+node* create(int);
+void choices(node*);
+void display(node*);
+void insertion_f(node**);
+void insertion_l(node **);
+void insertion_p(node **,int);
+void deletion(node**,int);
+int main()
+{
+    int data;
+    printf("Enter The Value of the first node=");
+    scanf("%d",&data);
+    node* head=create(data);
+    head->link=head;
+    printf("\nCircular linked-list is operational now!\n");
+    choices(head);
+    free(head);
+    return 0;
+}
+node* create(int d)
+{
+    node* new_node=(node*)calloc(1,sizeof(node));
+    new_node->data=d;
+    new_node->link=NULL;
+    return new_node;
+}
+void choices(node* head)
+{
+    int ch,pos;
+    while(1)
+    {
+        printf("\n1.Insertion at first\n");
+        printf("2.Insertion at last\n");
+        printf("3.Insertion at any position\n");
+        printf("4.Deletion\n");
+        printf("5.Display\n");
+        printf("Enter Your Choice(-1 to exit)=");
+        scanf("%d",&ch);
+        if(ch==-1) break;
+        switch(ch)
+        {
+            case 1: 
+                insertion_f(&head);
+                printf("\nInsertion Success!\n");
+                break;
+            case 2: 
+                insertion_l(&head);
+                printf("\nInsertion Success!\n");
+                break;
+            case 3:
+                printf("Enter The Position=");
+                scanf("%d",&pos);
+                if(pos>(length_of_list+1))
+                {
+                    printf("\nNo such Position exist in memory!\n");
+                    break;
+                }
+                insertion_p(&head,pos);
+                printf("\nInsertion Success!\n");
+                break;
+            case 4:
+                printf("Enter The Position=");
+                scanf("%d",&pos);
+                if(pos>length_of_list)
+                {
+                    printf("\nNo such Position exist in memory!\n");
+                    break;
+                }
+                else if(pos==1 && head->link==head)
+                {
+                    printf("\nCannot Delete this node, as deleting this will make the list un-operational!\n");
+                    break;
+                }
+                deletion(&head,pos);
+                printf("\nDeletion Success!\n");
+                break;
+            case 5:
+                display(head);
+                break;
+            default:
+                printf("\nWrong Choice! Try Again\n");
+        }
+    }
+}
+void insertion_f(node** myhead)
+{
+    int val;
+    printf("Enter The Value to be inserted=");
+    scanf("%d",&val);
+    node *new=create(val);
+    new->link=(*myhead);
+    if((*myhead)->link==(*myhead))
+    {
+        (*myhead)->link=new;
+    }
+    else
+    {
+        node * temp=*myhead;
+        node *move=*myhead;
+        move=move->link;
+        while(move->link!=temp)
+        {
+            move=move->link;
+        }
+        move->link=new;
+    }
+    (*myhead)=new;
+    length_of_list+=1;
+}
+void display(node *head)
+{
+    printf("\nThe List Looks Like:\n\n");
+    node *pre=head;
+    printf("%d->",head->data);
+    head=head->link;
+    while(head!=pre)
+    {
+        printf("%d->",head->data);
+        head=head->link;
+    }
+    printf("\n");
+}
+void insertion_l(node **myhead)
+{
+    int val;
+    printf("Enter The Value to be inserted=");
+    scanf("%d",&val);
+    node *new=create(val);
+    new->link=(*myhead);
+    if((*myhead)->link==(*myhead))
+    {
+        (*myhead)->link=new;
+    }
+    else
+    {
+        node * temp=*myhead;
+        node *move=*myhead;
+        move=move->link;
+        while(move->link!=temp)
+        {
+            move=move->link;
+        }
+        move->link=new;
+    }
+    length_of_list+=1;  
+}
+void insertion_p(node **myhead,int pos)
+{
+    if(pos==1)
+    {
+        insertion_f(myhead);
+    }
+    else if(pos==(length_of_list+1))
+    {
+        insertion_l(myhead);
+    }
+    else
+    {
+        int val;
+        printf("Enter The Value=");
+        scanf("%d",&val);
+        node* new=create(val);
+        node* temp=*myhead;
+        node*next;
+        for(int i=pos;i>2;i--)
+        {
+            temp=temp->link;
+        }
+        next=temp->link;
+        temp->link=new;
+        new->link=next;
+    }
+}
+void deletion(node **myhead,int pos)
+{
+    node *traverse=*myhead;
+    if (pos==1)
+    {
+        traverse=traverse->link;
+        while(traverse->link!=(*myhead))
+        {
+            traverse=traverse->link;
+        }
+        *myhead=(*myhead)->link;
+        traverse->link=(*myhead);
+    }
+    else
+    {
+        node *next;
+        for(int i=pos;i>2;i--)
+        {
+            traverse=traverse->link;
+        }
+        next=traverse->link;
+        next=next->link;
+        traverse->link=next;
+    }
+    length_of_list-=1;
+}
