@@ -1,0 +1,165 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define MAX 100
+typedef struct
+{
+    char data[MAX];
+    int top;
+}stack;
+stack push(stack,char);
+stack pop(stack);
+int main()
+{
+    system("clear||cls");
+    stack st;
+    st.top=-1;
+    int temp;
+    char str[MAX];
+    char dollar[MAX]="$";
+    printf("Enter The Expression:");
+    scanf("%[^\n]",str);
+    strcat(str,dollar);
+    printf("The Postfix Expression:");
+    for(int i=0;i<strlen(str);i++)
+    {
+        if(str[i]=='(' || str[i]=='{' || str[i]=='[')
+        {
+            st=push(st,str[i]);
+        }
+        else if(str[i]==')')
+        {
+            temp=st.top;
+            for(int j=temp;j>=0;j--)
+            {
+                if(st.data[st.top]=='(')
+                {
+                    st=pop(st);
+                    break;
+                }
+                else st=pop(st);
+            }
+        }
+        else if(str[i]=='}')
+        {
+            temp=st.top;
+            for(int j=temp;j>=0;j--)
+            {
+                if(st.data[st.top]=='{')
+                {
+                    st=pop(st);
+                    break;
+                }
+                else st=pop(st);
+            }
+        }
+        else if(str[i]==']')
+        {
+            temp=st.top;
+            for(int j=temp;j>=0;j--)
+            {
+                if(st.data[st.top]=='[')
+                {
+                    st=pop(st);
+                    break;
+                }
+                else st=pop(st);
+            }
+        }
+        else if(str[i]!='+' && str[i]!='-' && str[i]!='/' && str[i]!='*' && str[i]!='^' && str[i]!='('  && str[i]!=')' && str[i]!='$')
+        {
+            printf("%c",str[i]);
+        }
+        else 
+        {
+            if(str[i]=='+')
+            {
+                temp=st.top;
+                for(int j=temp;j>=0;j--)
+                {
+                    if(st.data[st.top]=='+' || st.data[st.top]=='-' || st.data[st.top]=='*' || st.data[st.top]=='/' || st.data[st.top]=='^')
+                    {
+                        st=pop(st);
+                    }
+                }
+                st=push(st,str[i]);
+            }
+            else if(str[i]=='-')
+            {
+                temp=st.top;
+                for(int j=temp;j>=0;j--)
+                {
+                    if(st.data[st.top]=='-' || st.data[st.top]=='+' || st.data[st.top]=='*' || st.data[st.top]=='/' || st.data[st.top]=='^')
+                    {
+                        st=pop(st);
+                    }
+                }
+                st=push(st,str[i]);
+            }
+            else if(str[i]=='*')
+            {
+                temp=st.top;
+                for(int j=temp;j>=0;j--)
+                {
+                    if(st.data[st.top]=='^'|| st.data[st.top]=='/' || st.data[st.top]=='*')
+                    {
+                        st=pop(st);
+                    }
+                }
+                st=push(st,str[i]);
+            }
+            else if(str[i]=='/')
+            {
+                temp=st.top;
+                for(int j=temp;j>=0;j--)
+                {
+                    if(st.data[st.top]=='^' || st.data[st.top]=='*' || st.data[st.top]=='/' )
+                    {
+                        st=pop(st);
+                    }
+                }
+                st=push(st,str[i]);
+            }
+            else if(str[i]=='^')
+            {
+                st=push(st,str[i]);
+            }
+            else if(str[i]=='$')
+            {
+                temp=st.top;
+                for(int j=temp;j>=0;j--)
+                {
+                    st=pop(st);
+                }
+            }
+        }
+    }
+    printf("\n");
+    return 0;           
+}
+stack push(stack st,char ch)
+{
+    if(st.top==MAX)
+    {
+        printf("\nStack Overflow!\n");
+    }
+    else
+    {
+        st.top+=1;
+        st.data[st.top]=ch;
+    }
+    return st;
+}
+stack pop(stack st)
+{
+    if(st.top==-1)
+    {
+        printf("\nStack Underflow!\n");
+    }
+    else
+    {
+        if(st.data[st.top]!='(' && st.data[st.top]!='{' && st.data[st.top]!='[') printf("%c",st.data[st.top]);
+        st.top-=1;
+    }
+    return st;
+}
